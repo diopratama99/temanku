@@ -1,0 +1,95 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:intl/date_symbol_data_local.dart';
+
+import 'data/app_database.dart';
+import 'services/auth_service.dart';
+import 'state/auth_notifier.dart';
+import 'pages/login_page_modern.dart';
+import 'pages/home_page.dart';
+import 'pages/add_transaction_simple.dart';
+import 'pages/categories_page_modern.dart';
+import 'pages/profile_page_modern.dart';
+import 'pages/account_transfers_page.dart';
+import 'pages/import_export_page.dart';
+import 'pages/ui_showcase_page.dart';
+import 'pages/transactions_page_modern.dart';
+import 'pages/budgets_page_modern.dart';
+import 'pages/savings_page_modern.dart';
+import 'theme/app_theme.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initializeDateFormatting('id_ID', null);
+  runApp(const MyApp());
+}
+
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  final _db = AppDatabase();
+  final _auth = AuthService();
+  late Future<void> _init;
+
+  @override
+  void initState() {
+    super.initState();
+    _init = _bootstrap();
+  }
+
+  Future<void> _bootstrap() async {
+    await _db.init();
+    await _auth.loadSession();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiProvider(
+      providers: [
+        Provider<AppDatabase>.value(value: _db),
+        ChangeNotifierProvider<AuthNotifier>(
+          create: (_) => AuthNotifier(_auth),
+        ),
+      ],
+      child: MaterialApp(
+        title: 'Temanku',
+        theme: AppTheme.theme(),
+        debugShowCheckedModeBanner: false,
+        routes: {
+          '/login': (_) => const LoginPageModern(),
+          '/add': (_) => const AddTransactionSimplePage(),
+          '/categories': (_) => const CategoriesPageModern(),
+          '/profile': (_) => const ProfilePageModern(),
+          '/accounts': (_) => const AccountTransfersPage(),
+          '/import': (_) => const ImportExportPage(),
+          '/showcase': (_) => const UIShowcasePage(),
+          '/transactions': (_) => const TransactionsPageModern(),
+          '/budgets': (_) => const BudgetsPageModern(),
+          '/savings': (_) => const SavingsPageModern(),
+        },
+        home: FutureBuilder<void>(
+          future: _init,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState != ConnectionState.done) {
+              return const Scaffold(
+                body: Center(child: CircularProgressIndicator()),
+              );
+            }
+            final auth = context.watch<AuthNotifier>();
+            if (auth.isLoggedIn) {
+              return const HomePage();
+            }
+            return const LoginPageModern();
+          },
+        ),
+      ),
+    );
+  }
+}
+
+// AuthNotifier moved to state/auth_notifier.dart
