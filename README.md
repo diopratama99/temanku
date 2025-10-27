@@ -81,7 +81,7 @@ flutter build ios --release
 - **State Management**: Provider
 - **Database**: SQLite (sqflite)
 - **Charts**: fl_chart
-- **Authentication**: Google Sign-In
+- **Authentication**: Google Sign-In (coming soon)
 - **Icons**: flutter_launcher_icons
 - **Splash Screen**: flutter_native_splash
 - **Fonts**: Google Fonts
