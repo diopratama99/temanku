@@ -490,7 +490,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Versi 1.0.0',
+                    'Versi 1.5.0',
                     style: TextStyle(
                       color: AppTheme.textSecondary,
                       fontSize: 11,
