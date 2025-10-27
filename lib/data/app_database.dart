@@ -428,11 +428,11 @@ class AppDatabase {
 
     final spend = await db.rawQuery(
       '''
-      SELECT c.name AS category, c.id AS category_id, SUM(t.amount) AS total
+      SELECT c.name AS category, c.emoji, c.id AS category_id, SUM(t.amount) AS total
       FROM transactions t
       JOIN categories c ON c.id=t.category_id
       WHERE t.user_id=? AND t.type='expense' AND t.date BETWEEN ? AND ?
-      GROUP BY c.id, c.name
+      GROUP BY c.id, c.name, c.emoji
       ORDER BY total DESC
     ''',
       [userId, startIso, endIso],
@@ -453,7 +453,7 @@ class AppDatabase {
     final month = startIso.substring(0, 7);
     final budgets = await db.rawQuery(
       '''
-      SELECT b.id, c.name AS category, b.amount,
+      SELECT b.id, c.name AS category, b.amount AS limit_amount,
              COALESCE( (SELECT SUM(amount) FROM transactions
                         WHERE user_id=b.user_id AND type='expense' AND category_id=b.category_id
                           AND substr(date,1,7)=b.month), 0) AS spent

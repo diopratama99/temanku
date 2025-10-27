@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../theme/app_theme.dart';
+import '../utils/theme_utils.dart';
 
 /// Accessible transaction list item with semantic labels
 /// Fixes M2: Better readability and interaction patterns
@@ -53,124 +54,217 @@ class TransactionListTile extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
         child: Padding(
           padding: const EdgeInsets.all(AppTheme.space16),
-          child: Row(
+          child: Column(
             children: [
-              // Category icon
-              Container(
-                width: 56,
-                height: 56,
-                decoration: BoxDecoration(
-                  color:
-                      (isIncome ? AppTheme.incomeColor : AppTheme.expenseColor)
-                          .withOpacity(0.1),
-                  shape: BoxShape.circle,
-                ),
-                child: Center(
-                  child: Text(emoji, style: const TextStyle(fontSize: 28)),
-                ),
-              ),
-              const SizedBox(width: AppTheme.space16),
-
-              // Transaction details
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Category name
-                    Text(
-                      category,
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: AppTheme.space4),
-
-                    // Date & account
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.calendar_today,
-                          size: 12,
-                          color: AppTheme.textSecondary,
-                        ),
-                        const SizedBox(width: AppTheme.space4),
-                        Text(formattedDate, style: theme.textTheme.bodySmall),
-                        const SizedBox(width: AppTheme.space8),
-                        Icon(
-                          _getAccountIcon(account),
-                          size: 12,
-                          color: AppTheme.textSecondary,
-                        ),
-                        const SizedBox(width: AppTheme.space4),
-                        Expanded(
-                          child: Text(
-                            account,
-                            style: theme.textTheme.bodySmall,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    // Notes (if available)
-                    if (notes.isNotEmpty) ...[
-                      const SizedBox(height: AppTheme.space4),
-                      Text(
-                        notes,
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          fontStyle: FontStyle.italic,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-              const SizedBox(width: AppTheme.space16),
-
-              // Amount
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
+              Row(
                 children: [
-                  Text(
-                    '${isIncome ? '+' : '-'} ${money.format(amount)}',
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      color: isIncome
-                          ? AppTheme.incomeColor
-                          : AppTheme.expenseColor,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  const SizedBox(height: AppTheme.space4),
+                  // Category icon
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppTheme.space8,
-                      vertical: AppTheme.space4,
-                    ),
+                    width: 56,
+                    height: 56,
                     decoration: BoxDecoration(
                       color:
                           (isIncome
-                                  ? AppTheme.incomeColor
-                                  : AppTheme.expenseColor)
+                                  ? (ThemeUtils.isDarkMode(context)
+                                        ? AppTheme.darkIncomeColor
+                                        : AppTheme.incomeColor)
+                                  : (ThemeUtils.isDarkMode(context)
+                                        ? AppTheme.darkExpenseColor
+                                        : AppTheme.expenseColor))
                               .withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(AppTheme.radiusSmall),
+                      shape: BoxShape.circle,
                     ),
-                    child: Text(
-                      isIncome ? 'Masuk' : 'Keluar',
-                      style: theme.textTheme.labelSmall?.copyWith(
-                        color: isIncome
-                            ? AppTheme.incomeColor
-                            : AppTheme.expenseColor,
-                        fontWeight: FontWeight.w600,
+                    child: Center(
+                      child: Text(emoji, style: const TextStyle(fontSize: 28)),
+                    ),
+                  ),
+                  const SizedBox(width: AppTheme.space16),
+
+                  // Transaction details
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Category name
+                        Text(
+                          category,
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: AppTheme.space4),
+
+                        // Date & account
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.calendar_today,
+                              size: 12,
+                              color: theme.textTheme.bodySmall?.color,
+                            ),
+                            const SizedBox(width: AppTheme.space4),
+                            Text(
+                              formattedDate,
+                              style: theme.textTheme.bodySmall,
+                            ),
+                            const SizedBox(width: AppTheme.space8),
+                            Icon(
+                              _getAccountIcon(account),
+                              size: 12,
+                              color: theme.textTheme.bodySmall?.color,
+                            ),
+                            const SizedBox(width: AppTheme.space4),
+                            Expanded(
+                              child: Text(
+                                account,
+                                style: theme.textTheme.bodySmall,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        // Notes (if available)
+                        if (notes.isNotEmpty) ...[
+                          const SizedBox(height: AppTheme.space4),
+                          Text(
+                            notes,
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              fontStyle: FontStyle.italic,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: AppTheme.space16),
+
+                  // Amount
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        '${isIncome ? '+' : '-'} ${money.format(amount)}',
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          color: isIncome
+                              ? (ThemeUtils.isDarkMode(context)
+                                    ? AppTheme.darkIncomeColor
+                                    : AppTheme.incomeColor)
+                              : (ThemeUtils.isDarkMode(context)
+                                    ? AppTheme.darkExpenseColor
+                                    : AppTheme.expenseColor),
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
-                    ),
+                      const SizedBox(height: AppTheme.space4),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppTheme.space8,
+                          vertical: AppTheme.space4,
+                        ),
+                        decoration: BoxDecoration(
+                          color:
+                              (isIncome
+                                      ? (ThemeUtils.isDarkMode(context)
+                                            ? AppTheme.darkIncomeColor
+                                            : AppTheme.incomeColor)
+                                      : (ThemeUtils.isDarkMode(context)
+                                            ? AppTheme.darkExpenseColor
+                                            : AppTheme.expenseColor))
+                                  .withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(
+                            AppTheme.radiusSmall,
+                          ),
+                        ),
+                        child: Text(
+                          isIncome ? 'Masuk' : 'Keluar',
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            color: isIncome
+                                ? (ThemeUtils.isDarkMode(context)
+                                      ? AppTheme.darkIncomeColor
+                                      : AppTheme.incomeColor)
+                                : (ThemeUtils.isDarkMode(context)
+                                      ? AppTheme.darkExpenseColor
+                                      : AppTheme.expenseColor),
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
+
+              // Delete button di pojok kanan bawah
+              if (onDelete != null) ...[
+                const SizedBox(height: AppTheme.space8),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: InkWell(
+                    onTap: () async {
+                      final confirm = await showDialog<bool>(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: const Text('Hapus Transaksi?'),
+                          content: Text(
+                            'Apakah Anda yakin ingin menghapus transaksi '
+                            '$category sebesar ${money.format(amount)}? '
+                            'Tindakan ini tidak dapat dibatalkan.',
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, false),
+                              child: const Text('Batal'),
+                            ),
+                            FilledButton(
+                              onPressed: () => Navigator.pop(context, true),
+                              style: FilledButton.styleFrom(
+                                backgroundColor: AppTheme.expenseColor,
+                              ),
+                              child: const Text('Hapus'),
+                            ),
+                          ],
+                        ),
+                      );
+
+                      if (confirm == true) {
+                        onDelete!();
+                      }
+                    },
+                    borderRadius: BorderRadius.circular(AppTheme.radiusSmall),
+                    child: Padding(
+                      padding: const EdgeInsets.all(AppTheme.space8),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.delete_outline,
+                            color: ThemeUtils.isDarkMode(context)
+                                ? AppTheme.darkExpenseColor
+                                : const Color(0xFFC62828),
+                            size: 18,
+                          ),
+                          const SizedBox(width: AppTheme.space4),
+                          Text(
+                            'Hapus',
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: ThemeUtils.isDarkMode(context)
+                                  ? AppTheme.darkExpenseColor
+                                  : const Color(0xFFC62828),
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ],
           ),
         ),
@@ -305,8 +399,12 @@ class TransactionCompactCard extends StatelessWidget {
                 '${isIncome ? '+' : '-'}${money.format(amount)}',
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: isIncome
-                      ? AppTheme.incomeColor
-                      : AppTheme.expenseColor,
+                      ? (ThemeUtils.isDarkMode(context)
+                            ? AppTheme.darkIncomeColor
+                            : AppTheme.incomeColor)
+                      : (ThemeUtils.isDarkMode(context)
+                            ? AppTheme.darkExpenseColor
+                            : AppTheme.expenseColor),
                   fontWeight: FontWeight.w600,
                 ),
                 textAlign: TextAlign.center,

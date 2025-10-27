@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 
 import '../data/app_database.dart';
 import '../state/auth_notifier.dart';
+import '../state/theme_notifier.dart';
 import '../theme/app_theme.dart';
 import '../widgets/state_widgets.dart';
 
@@ -19,39 +20,11 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  String _selectedCurrency = 'IDR';
-
-  // Available currencies
-  final List<Map<String, String>> _currencies = [
-    {'code': 'IDR', 'name': 'Rupiah Indonesia', 'symbol': 'Rp'},
-    {'code': 'USD', 'name': 'US Dollar', 'symbol': '\$'},
-    {'code': 'EUR', 'name': 'Euro', 'symbol': '€'},
-    {'code': 'GBP', 'name': 'British Pound', 'symbol': '£'},
-    {'code': 'JPY', 'name': 'Japanese Yen', 'symbol': '¥'},
-    {'code': 'SGD', 'name': 'Singapore Dollar', 'symbol': 'S\$'},
-    {'code': 'MYR', 'name': 'Malaysian Ringgit', 'symbol': 'RM'},
-  ];
+  // Currency selector removed - app uses IDR only
 
   @override
   void initState() {
     super.initState();
-    final user = context.read<AuthNotifier>().user!;
-    _selectedCurrency = (user['currency'] as String?) ?? 'IDR';
-  }
-
-  Future<void> _saveCurrency() async {
-    final user = context.read<AuthNotifier>().user!;
-    await context.read<AppDatabase>().db.update(
-      'users',
-      {'currency': _selectedCurrency},
-      where: 'id=?',
-      whereArgs: [user['id']],
-    );
-
-    if (!mounted) return;
-    // Update user in auth notifier
-    await context.read<AuthNotifier>().refreshUser();
-    showSuccessSnackbar(context, 'Mata uang berhasil diubah');
   }
 
   Future<void> _logout() async {
@@ -78,6 +51,143 @@ class _ProfilePageState extends State<ProfilePage> {
       await context.read<AuthNotifier>().logout();
       if (!mounted) return;
       Navigator.pushReplacementNamed(context, '/login');
+    }
+  }
+
+  Future<void> _resetData() async {
+    // Step 1: First confirmation
+    final confirm1 = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Row(
+          children: [
+            Icon(Icons.warning_amber_rounded, color: Colors.orange, size: 28),
+            const SizedBox(width: 12),
+            const Text('Peringatan!'),
+          ],
+        ),
+        content: const Text(
+          'Apakah Anda yakin ingin menghapus SEMUA data?\n\n'
+          'Data yang akan dihapus:\n'
+          '• Semua transaksi\n'
+          '• Semua kategori\n'
+          '• Semua budget\n'
+          '• Semua tabungan\n\n'
+          'Tindakan ini TIDAK DAPAT dibatalkan!',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Batal'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: FilledButton.styleFrom(backgroundColor: Colors.orange),
+            child: const Text('Lanjutkan'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm1 != true) return;
+
+    // Step 2: Type "HAPUS DATA" confirmation
+    final textController = TextEditingController();
+    final confirm2 = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        title: const Text(
+          'Konfirmasi Penghapusan',
+          textAlign: TextAlign.center,
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              'Ketik "HAPUS DATA" untuk mengonfirmasi penghapusan:',
+              style: TextStyle(fontWeight: FontWeight.w600),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: textController,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: 'Ketik: HAPUS DATA',
+              ),
+              textCapitalization: TextCapitalization.characters,
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+        actionsAlignment: MainAxisAlignment.center,
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Batal'),
+          ),
+          FilledButton(
+            onPressed: () {
+              if (textController.text.trim() == 'HAPUS DATA') {
+                Navigator.pop(context, true);
+              } else {
+                showErrorSnackbar(context, 'Teks tidak sesuai!');
+              }
+            },
+            style: FilledButton.styleFrom(backgroundColor: Colors.red),
+            child: const Text('Hapus Semua Data'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm2 != true) return;
+
+    // Perform data deletion
+    try {
+      final user = context.read<AuthNotifier>().user!;
+      final userId = user['id'] as int;
+      final db = context.read<AppDatabase>().db;
+
+      await db.transaction((txn) async {
+        // Delete all user data
+        await txn.delete(
+          'transactions',
+          where: 'user_id = ?',
+          whereArgs: [userId],
+        );
+        await txn.delete(
+          'categories',
+          where: 'user_id = ?',
+          whereArgs: [userId],
+        );
+        await txn.delete('budgets', where: 'user_id = ?', whereArgs: [userId]);
+        await txn.delete(
+          'savings_goals',
+          where: 'user_id = ?',
+          whereArgs: [userId],
+        );
+        await txn.delete(
+          'savings_allocations',
+          where: 'user_id = ?',
+          whereArgs: [userId],
+        );
+        await txn.delete(
+          'savings_auto_transfers',
+          where: 'user_id = ?',
+          whereArgs: [userId],
+        );
+      });
+
+      if (!mounted) return;
+      showSuccessSnackbar(context, '✅ Semua data berhasil dihapus!');
+
+      // Refresh to dashboard
+      Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+    } catch (e) {
+      if (!mounted) return;
+      showErrorSnackbar(context, 'Gagal menghapus data: $e');
     }
   }
 
@@ -282,51 +392,46 @@ class _ProfilePageState extends State<ProfilePage> {
 
             const SizedBox(height: AppTheme.space16),
 
-            // Currency Selector Section
-            _buildSectionCard(
-              title: 'Mata Uang',
-              icon: Icons.attach_money,
-              children: [
-                DropdownButtonFormField<String>(
-                  value: _selectedCurrency,
-                  items: _currencies.map((curr) {
-                    return DropdownMenuItem<String>(
-                      value: curr['code'],
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            curr['symbol']!,
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                              height: 1.0,
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            '${curr['code']!} - ${curr['name']!}',
-                            style: const TextStyle(fontSize: 14, height: 1.0),
-                          ),
-                        ],
-                      ),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    if (value != null) {
-                      setState(() => _selectedCurrency = value);
-                      _saveCurrency();
-                    }
-                  },
-                  decoration: const InputDecoration(
-                    labelText: 'Pilih Mata Uang',
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Icons.currency_exchange),
-                    helperText: 'Mata uang untuk tampilan nominal',
+            // TODO: Dark Mode Toggle - Temporarily disabled, will re-enable later
+            // TODO: Currency Selector - Removed, app uses IDR only
+            const SizedBox(height: AppTheme.space16),
+
+            // Reset Data Button
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.orange.shade50,
+                borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
+                border: Border.all(color: Colors.orange.shade200, width: 1),
+              ),
+              child: ListTile(
+                leading: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: Colors.orange.shade100,
+                    borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
+                  ),
+                  child: Icon(
+                    Icons.delete_sweep_rounded,
+                    color: Colors.orange.shade700,
+                    size: 22,
                   ),
                 ),
-              ],
+                title: Text(
+                  'Reset Data',
+                  style: TextStyle(
+                    color: Colors.orange.shade700,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                subtitle: const Text('Hapus semua data transaksi'),
+                trailing: Icon(
+                  Icons.arrow_forward_ios,
+                  size: 16,
+                  color: Colors.orange.shade700,
+                ),
+                onTap: _resetData,
+              ),
             ),
 
             const SizedBox(height: AppTheme.space16),
@@ -405,18 +510,27 @@ class _ProfilePageState extends State<ProfilePage> {
     required IconData icon,
     required List<Widget> children,
   }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Container(
       decoration: BoxDecoration(
-        color: AppTheme.surfaceColor,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
-        border: Border.all(color: Colors.grey.shade200, width: 1),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        border: Border.all(
+          color: isDark
+              ? AppTheme.darkTextDisabled.withOpacity(0.2)
+              : Colors.grey.shade200,
+          width: 1,
+        ),
+        boxShadow: isDark
+            ? []
+            : [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
       ),
       child: Padding(
         padding: const EdgeInsets.all(AppTheme.space16),
@@ -429,10 +543,20 @@ class _ProfilePageState extends State<ProfilePage> {
                   width: 32,
                   height: 32,
                   decoration: BoxDecoration(
-                    color: AppTheme.primaryColor.withOpacity(0.1),
+                    color:
+                        (isDark
+                                ? AppTheme.darkPrimaryColor
+                                : AppTheme.primaryColor)
+                            .withOpacity(0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Icon(icon, size: 18, color: AppTheme.primaryColor),
+                  child: Icon(
+                    icon,
+                    size: 18,
+                    color: isDark
+                        ? AppTheme.darkPrimaryColor
+                        : AppTheme.primaryColor,
+                  ),
                 ),
                 const SizedBox(width: AppTheme.space12),
                 Text(
@@ -456,16 +580,23 @@ class _ProfilePageState extends State<ProfilePage> {
     required String label,
     required String value,
   }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Row(
       children: [
         Container(
           width: 40,
           height: 40,
           decoration: BoxDecoration(
-            color: AppTheme.primaryColor.withOpacity(0.1),
+            color: (isDark ? AppTheme.darkPrimaryColor : AppTheme.primaryColor)
+                .withOpacity(0.1),
             borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
           ),
-          child: Icon(icon, color: AppTheme.primaryColor, size: 20),
+          child: Icon(
+            icon,
+            color: isDark ? AppTheme.darkPrimaryColor : AppTheme.primaryColor,
+            size: 20,
+          ),
         ),
         const SizedBox(width: AppTheme.space12),
         Expanded(
@@ -476,17 +607,19 @@ class _ProfilePageState extends State<ProfilePage> {
                 label,
                 style: TextStyle(
                   fontSize: 12,
-                  color: Colors.grey.shade600,
+                  color: isDark
+                      ? AppTheme.darkTextSecondary
+                      : Colors.grey.shade600,
                   fontWeight: FontWeight.w500,
                 ),
               ),
               const SizedBox(height: 4),
               Text(
                 value,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  color: Colors.black87,
+                  color: isDark ? AppTheme.darkTextPrimary : Colors.black87,
                 ),
               ),
             ],
@@ -851,18 +984,27 @@ class _EditProfilePageState extends State<EditProfilePage> {
     required IconData icon,
     required List<Widget> children,
   }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Container(
       decoration: BoxDecoration(
-        color: AppTheme.surfaceColor,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
-        border: Border.all(color: Colors.grey.shade200, width: 1),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        border: Border.all(
+          color: isDark
+              ? AppTheme.darkTextDisabled.withOpacity(0.2)
+              : Colors.grey.shade200,
+          width: 1,
+        ),
+        boxShadow: isDark
+            ? []
+            : [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
       ),
       child: Padding(
         padding: const EdgeInsets.all(AppTheme.space16),
@@ -875,10 +1017,20 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   width: 32,
                   height: 32,
                   decoration: BoxDecoration(
-                    color: AppTheme.primaryColor.withOpacity(0.1),
+                    color:
+                        (isDark
+                                ? AppTheme.darkPrimaryColor
+                                : AppTheme.primaryColor)
+                            .withOpacity(0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Icon(icon, size: 18, color: AppTheme.primaryColor),
+                  child: Icon(
+                    icon,
+                    size: 18,
+                    color: isDark
+                        ? AppTheme.darkPrimaryColor
+                        : AppTheme.primaryColor,
+                  ),
                 ),
                 const SizedBox(width: AppTheme.space12),
                 Text(

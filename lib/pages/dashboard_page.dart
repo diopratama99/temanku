@@ -62,16 +62,22 @@ class _DashboardPageState extends State<DashboardPage> {
         onTap: () => Navigator.pushNamed(context, '/transactions'),
       ),
       _FeatureItem(
+        icon: Icons.trending_up,
+        label: 'Analisa Tren',
+        color: const Color(0xFF0EA5E9),
+        onTap: () => Navigator.pushNamed(context, '/trend_analysis'),
+      ),
+      _FeatureItem(
+        icon: Icons.bar_chart_rounded,
+        label: 'Perbandingan',
+        color: const Color(0xFF8B5CF6),
+        onTap: () => Navigator.pushNamed(context, '/monthly_comparison'),
+      ),
+      _FeatureItem(
         icon: Icons.category_outlined,
         label: 'Kategori',
         color: const Color(0xFF7C3AED),
         onTap: () => Navigator.pushNamed(context, '/categories'),
-      ),
-      _FeatureItem(
-        icon: Icons.pie_chart_outline,
-        label: 'Budgeting',
-        color: const Color(0xFFEF4444),
-        onTap: () => Navigator.pushNamed(context, '/budgets'),
       ),
       _FeatureItem(
         icon: Icons.savings_outlined,
@@ -84,12 +90,6 @@ class _DashboardPageState extends State<DashboardPage> {
         label: 'Import/Export',
         color: const Color(0xFFF59E0B),
         onTap: () => Navigator.pushNamed(context, '/import'),
-      ),
-      _FeatureItem(
-        icon: Icons.person_outline,
-        label: 'Profil',
-        color: const Color(0xFF6366F1),
-        onTap: () => Navigator.pushNamed(context, '/profile'),
       ),
     ];
 
@@ -106,21 +106,39 @@ class _DashboardPageState extends State<DashboardPage> {
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: AppTheme.primaryColor.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(8),
+                  gradient: LinearGradient(
+                    colors: [
+                      AppTheme.primaryColor,
+                      AppTheme.primaryColor.withOpacity(0.7),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppTheme.primaryColor.withOpacity(0.3),
+                      blurRadius: 8,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
                 ),
                 child: const Icon(
                   Icons.apps_rounded,
-                  color: AppTheme.primaryColor,
-                  size: 20,
+                  color: Colors.white,
+                  size: 22,
                 ),
               ),
               const SizedBox(width: AppTheme.space12),
-              const Text(
-                'Menu Cepat',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+              Text(
+                'Fitur Temanku',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                  color: Theme.of(context).textTheme.bodyLarge?.color,
+                ),
               ),
             ],
           ),
@@ -129,9 +147,9 @@ class _DashboardPageState extends State<DashboardPage> {
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             crossAxisCount: 3,
-            mainAxisSpacing: AppTheme.space12,
-            crossAxisSpacing: AppTheme.space12,
-            childAspectRatio: 1.0,
+            mainAxisSpacing: 8,
+            crossAxisSpacing: 8,
+            childAspectRatio: 0.95,
             children: features
                 .map((item) => _FeatureMenuCard(item: item))
                 .toList(),
@@ -200,21 +218,39 @@ class _DashboardPageState extends State<DashboardPage> {
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF10B981).withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(8),
+                  gradient: LinearGradient(
+                    colors: [
+                      const Color(0xFF10B981),
+                      const Color(0xFF10B981).withOpacity(0.7),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFF10B981).withOpacity(0.3),
+                      blurRadius: 8,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
                 ),
                 child: const Icon(
                   Icons.assessment_rounded,
-                  color: Color(0xFF10B981),
-                  size: 20,
+                  color: Colors.white,
+                  size: 22,
                 ),
               ),
               const SizedBox(width: AppTheme.space12),
-              const Text(
+              Text(
                 'Ringkasan Keuangan',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                  color: Theme.of(context).textTheme.bodyLarge?.color,
+                ),
               ),
             ],
           ),
@@ -228,29 +264,58 @@ class _DashboardPageState extends State<DashboardPage> {
           ] else
             Card(
               child: Padding(
-                padding: const EdgeInsets.all(AppTheme.space24),
-                child: Column(
-                  children: [
-                    const Icon(
-                      Icons.track_changes,
-                      size: 48,
-                      color: AppTheme.textSecondary,
-                    ),
-                    const SizedBox(height: AppTheme.space12),
-                    const Text(
-                      'Belum Ada Target',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppTheme.space16,
+                  vertical: AppTheme.space32,
+                ),
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              AppTheme.textSecondary,
+                              AppTheme.textSecondary.withOpacity(0.7),
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppTheme.textSecondary.withOpacity(0.3),
+                              blurRadius: 8,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child: const Icon(
+                          Icons.track_changes,
+                          size: 48,
+                          color: Colors.white,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: AppTheme.space8),
-                    Text(
-                      'Mulai atur anggaran dan tabungan Anda',
-                      style: TextStyle(color: AppTheme.textSecondary),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
+                      const SizedBox(height: AppTheme.space12),
+                      const Text(
+                        'Belum Ada Target',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: AppTheme.space8),
+                      Text(
+                        'Mulai atur anggaran dan tabungan Anda',
+                        style: TextStyle(color: AppTheme.textSecondary),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -275,23 +340,38 @@ class _DashboardPageState extends State<DashboardPage> {
                   Row(
                     children: [
                       Container(
-                        padding: const EdgeInsets.all(8),
+                        padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                          color: AppTheme.incomeColor.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(8),
+                          gradient: LinearGradient(
+                            colors: [
+                              AppTheme.incomeColor,
+                              AppTheme.incomeColor.withOpacity(0.7),
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppTheme.incomeColor.withOpacity(0.3),
+                              blurRadius: 8,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
                         ),
                         child: const Icon(
                           Icons.savings_outlined,
-                          color: AppTheme.incomeColor,
-                          size: 20,
+                          color: Colors.white,
+                          size: 22,
                         ),
                       ),
                       const SizedBox(width: AppTheme.space12),
-                      const Text(
+                      Text(
                         'Tabungan',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
+                          color: Theme.of(context).textTheme.bodyLarge?.color,
                         ),
                       ),
                     ],
@@ -322,9 +402,12 @@ class _DashboardPageState extends State<DashboardPage> {
                           Expanded(
                             child: Text(
                               g['name'] as String,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,
+                                color: Theme.of(
+                                  context,
+                                ).textTheme.bodyMedium?.color,
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -389,23 +472,38 @@ class _DashboardPageState extends State<DashboardPage> {
                   Row(
                     children: [
                       Container(
-                        padding: const EdgeInsets.all(8),
+                        padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                          color: AppTheme.expenseColor.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(8),
+                          gradient: LinearGradient(
+                            colors: [
+                              AppTheme.expenseColor,
+                              AppTheme.expenseColor.withOpacity(0.7),
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppTheme.expenseColor.withOpacity(0.3),
+                              blurRadius: 8,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
                         ),
                         child: const Icon(
                           Icons.pie_chart,
-                          color: AppTheme.expenseColor,
-                          size: 20,
+                          color: Colors.white,
+                          size: 22,
                         ),
                       ),
                       const SizedBox(width: AppTheme.space12),
-                      const Text(
+                      Text(
                         'Budgeting Bulan Ini',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
+                          color: Theme.of(context).textTheme.bodyLarge?.color,
                         ),
                       ),
                     ],
@@ -437,9 +535,12 @@ class _DashboardPageState extends State<DashboardPage> {
                           Expanded(
                             child: Text(
                               b['category'] as String,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,
+                                color: Theme.of(
+                                  context,
+                                ).textTheme.bodyMedium?.color,
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -512,9 +613,13 @@ class _DashboardPageState extends State<DashboardPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
+              Text(
                 'Transaksi Terbaru',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                  color: Theme.of(context).textTheme.bodyLarge?.color,
+                ),
               ),
               TextButton(
                 onPressed: () => Navigator.pushNamed(context, '/transactions'),
@@ -570,9 +675,10 @@ class _DashboardPageState extends State<DashboardPage> {
                   children: [
                     Text(
                       category,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
+                        color: Theme.of(context).textTheme.bodyLarge?.color,
                       ),
                     ),
                     const SizedBox(height: 2),
@@ -627,42 +733,49 @@ class _FeatureMenuCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
-        side: BorderSide(color: item.color.withOpacity(0.2), width: 1.5),
-      ),
-      child: InkWell(
-        onTap: item.onTap,
-        borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
-        child: Padding(
-          padding: const EdgeInsets.all(AppTheme.space12),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: item.color.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(12),
+    return InkWell(
+      onTap: item.onTap,
+      borderRadius: BorderRadius.circular(20),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [item.color, item.color.withOpacity(0.7)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
                 ),
-                child: Icon(item.icon, color: item.color, size: 28),
+                borderRadius: BorderRadius.circular(22),
+                boxShadow: [
+                  BoxShadow(
+                    color: item.color.withOpacity(0.35),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
               ),
-              const SizedBox(height: 8),
-              Text(
-                item.label,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: AppTheme.textPrimary,
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
+              child: Icon(item.icon, color: Colors.white, size: 36),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              item.label,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 11.5,
+                fontWeight: FontWeight.w600,
+                color: Theme.of(context).textTheme.bodyMedium?.color,
               ),
-            ],
-          ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
         ),
       ),
     );

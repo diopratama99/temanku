@@ -154,6 +154,128 @@ class _CategoriesPageState extends State<CategoriesPage> {
     }
   }
 
+  Future<void> _editCategory(Map<String, dynamic> category) async {
+    final id = category['id'] as int;
+    final nameCtrl = TextEditingController(text: category['name'] as String);
+    final emojiCtrl = TextEditingController(
+      text: category['emoji'] as String? ?? '',
+    );
+
+    final result = await showModalBottomSheet<bool>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        child: Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(
+              top: Radius.circular(AppTheme.radiusLarge),
+            ),
+          ),
+          padding: const EdgeInsets.all(AppTheme.space24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: AppTheme.primaryColor.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(
+                        AppTheme.radiusMedium,
+                      ),
+                    ),
+                    child: const Icon(Icons.edit, color: AppTheme.primaryColor),
+                  ),
+                  const SizedBox(width: AppTheme.space12),
+                  Text(
+                    'Edit Kategori ${_typeFilter == 'expense' ? 'Pengeluaran' : 'Pemasukan'}',
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppTheme.space24),
+              TextField(
+                controller: emojiCtrl,
+                decoration: InputDecoration(
+                  labelText: 'Emoji',
+                  hintText: '😀',
+                  border: const OutlineInputBorder(),
+                  prefixIcon: const Icon(Icons.emoji_emotions_outlined),
+                  helperText: 'Ketik emoji atau salin dari keyboard',
+                ),
+                maxLength: 2,
+              ),
+              const SizedBox(height: AppTheme.space12),
+              TextField(
+                controller: nameCtrl,
+                decoration: const InputDecoration(
+                  labelText: 'Nama Kategori',
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.label_outline),
+                ),
+                textCapitalization: TextCapitalization.words,
+              ),
+              const SizedBox(height: AppTheme.space24),
+              FilledButton.icon(
+                onPressed: () async {
+                  if (nameCtrl.text.trim().isEmpty) {
+                    showErrorSnackbar(
+                      context,
+                      'Nama kategori tidak boleh kosong',
+                    );
+                    return;
+                  }
+
+                  final db = context.read<AppDatabase>().db;
+
+                  await db.update(
+                    'categories',
+                    {
+                      'name': nameCtrl.text.trim(),
+                      'emoji': emojiCtrl.text.trim().isNotEmpty
+                          ? emojiCtrl.text.trim()
+                          : '📌',
+                    },
+                    where: 'id = ?',
+                    whereArgs: [id],
+                  );
+
+                  if (!context.mounted) return;
+                  Navigator.pop(context, true);
+                },
+                icon: const Icon(Icons.save),
+                label: const Text('Simpan Perubahan'),
+                style: FilledButton.styleFrom(
+                  backgroundColor: AppTheme.primaryColor,
+                  padding: const EdgeInsets.symmetric(
+                    vertical: AppTheme.space12,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    if (result == true) {
+      _loadCategories();
+      if (!mounted) return;
+      showSuccessSnackbar(context, 'Kategori berhasil diperbarui');
+    }
+  }
+
   Future<void> _deleteCategory(int id, String name) async {
     final confirm = await showDialog<bool>(
       context: context,
@@ -188,8 +310,16 @@ class _CategoriesPageState extends State<CategoriesPage> {
 
   @override
   Widget build(BuildContext context) {
+    // Warna dinamis berdasarkan tab yang aktif
+    final activeColor = _typeFilter == 'expense'
+        ? AppTheme.expenseColor
+        : AppTheme.incomeColor;
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Kelola Kategori'), centerTitle: false),
+      appBar: AppBar(
+        title: const Text('Kelola Kategori'),
+        centerTitle: true, // Tengah
+      ),
       body: Column(
         children: [
           // Type Selector Card
@@ -197,15 +327,12 @@ class _CategoriesPageState extends State<CategoriesPage> {
             margin: const EdgeInsets.all(AppTheme.space16),
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [
-                  AppTheme.primaryColor,
-                  AppTheme.primaryColor.withOpacity(0.8),
-                ],
+                colors: [activeColor, activeColor.withOpacity(0.8)],
               ),
               borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
               boxShadow: [
                 BoxShadow(
-                  color: AppTheme.primaryColor.withOpacity(0.3),
+                  color: activeColor.withOpacity(0.3),
                   blurRadius: 12,
                   offset: const Offset(0, 4),
                 ),
@@ -218,6 +345,7 @@ class _CategoriesPageState extends State<CategoriesPage> {
                     label: 'Pengeluaran',
                     value: 'expense',
                     icon: Icons.trending_down,
+                    color: AppTheme.expenseColor,
                   ),
                 ),
                 Container(
@@ -230,6 +358,7 @@ class _CategoriesPageState extends State<CategoriesPage> {
                     label: 'Pemasukan',
                     value: 'income',
                     icon: Icons.trending_up,
+                    color: AppTheme.incomeColor,
                   ),
                 ),
               ],
@@ -282,7 +411,7 @@ class _CategoriesPageState extends State<CategoriesPage> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _addCategory,
-        backgroundColor: AppTheme.primaryColor,
+        backgroundColor: activeColor,
         icon: const Icon(Icons.add),
         label: const Text('Tambah Kategori'),
       ),
@@ -293,6 +422,7 @@ class _CategoriesPageState extends State<CategoriesPage> {
     required String label,
     required String value,
     required IconData icon,
+    required Color color,
   }) {
     final isActive = _typeFilter == value;
 
@@ -331,6 +461,11 @@ class _CategoriesPageState extends State<CategoriesPage> {
     final emoji = cat['emoji'] as String? ?? '📌';
     final id = cat['id'] as int;
 
+    // Warna dinamis
+    final cardColor = _typeFilter == 'expense'
+        ? AppTheme.expenseColor
+        : AppTheme.incomeColor;
+
     return Dismissible(
       key: Key('cat-$id'),
       direction: DismissDirection.endToStart,
@@ -346,9 +481,9 @@ class _CategoriesPageState extends State<CategoriesPage> {
       ),
       child: Container(
         decoration: BoxDecoration(
-          color: AppTheme.surfaceColor,
+          color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
-          border: Border.all(color: Colors.grey.shade200, width: 1),
+          border: Border.all(color: Theme.of(context).dividerColor, width: 1),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.05),
@@ -358,6 +493,7 @@ class _CategoriesPageState extends State<CategoriesPage> {
           ],
         ),
         child: ListTile(
+          onTap: () => _editCategory(cat), // Tap untuk edit
           contentPadding: const EdgeInsets.symmetric(
             horizontal: AppTheme.space16,
             vertical: AppTheme.space8,
@@ -366,7 +502,7 @@ class _CategoriesPageState extends State<CategoriesPage> {
             width: 48,
             height: 48,
             decoration: BoxDecoration(
-              color: AppTheme.primaryColor.withOpacity(0.1),
+              color: cardColor.withOpacity(0.1),
               borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
             ),
             child: Center(
@@ -381,9 +517,21 @@ class _CategoriesPageState extends State<CategoriesPage> {
             _typeFilter == 'expense' ? 'Pengeluaran' : 'Pemasukan',
             style: TextStyle(color: AppTheme.textSecondary, fontSize: 13),
           ),
-          trailing: IconButton(
-            icon: const Icon(Icons.delete_outline, color: Colors.red),
-            onPressed: () => _deleteCategory(id, name),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Icon edit sebagai petunjuk
+              Icon(
+                Icons.edit_outlined,
+                color: cardColor.withOpacity(0.6),
+                size: 20,
+              ),
+              const SizedBox(width: 8),
+              IconButton(
+                icon: const Icon(Icons.delete_outline, color: Colors.red),
+                onPressed: () => _deleteCategory(id, name),
+              ),
+            ],
           ),
         ),
       ),

@@ -5,20 +5,77 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.0] - 2025-10-27
+
+### Added
+
+- 📊 **Trend Analysis Page** - Analisa tren keuangan dengan visualisasi grafik
+  - Grafik line chart pengeluaran dengan prediksi tren
+  - Support mode bulanan dan mingguan
+  - Prediksi AI untuk periode berikutnya
+  - Analisis korelasi antara pemasukan dan pengeluaran
+  - Ringkasan statistik (rata-rata, max, min, standard deviation)
+  - Insight otomatis berdasarkan pola pengeluaran
+
+### Improved
+
+- 📈 **Chart Visualization** - Optimasi tampilan grafik untuk dataset besar
+  - Label X-axis dengan rotasi untuk readability lebih baik
+  - Smart label interval (mingguan: setiap 4, bulanan: setiap 2)
+  - Y-axis format dengan prefix "Rp" dan tanpa desimal
+  - Custom tooltip dengan format Rupiah Indonesia
+  - Font size yang disesuaikan untuk berbagai ukuran data
+  - Garis prediksi tren yang tidak over-extend
+
+- 🎯 **Budget Display** - Fix budget showing Rp 0 in dashboard
+  - Corrected SQL query column alias from `amount` to `limit_amount`
+  - Budget limits now display correctly in financial summary
+
+- 📊 **Transaction Statistics** - Fix transaction count in statistics tab
+  - Added dedicated `_loadTransactionCounts()` method with SQL COUNT query
+  - Separated count logic from latest transactions query
+  - Accurate income and expense transaction counts
+
+### Fixed
+
+- 🔧 **Login Page** - Added missing password label in login/register forms
+- 🎨 **Dashboard UI** - Centered "Belum Ada Target" savings card with better width
+- 💬 **Dialog Alignment** - Centered text and buttons in reset data confirmation dialogs
+- 🔄 **Monthly Comparison** - Fixed compilation errors (imports, null safety, const issues)
+
+### Changed
+
+- 💱 **Currency Settings** - Removed currency selector from profile page
+  - App now uses IDR (Rupiah Indonesia) only
+  - Simplified codebase by removing multi-currency complexity
+  - Cleaner profile page without currency dropdown
+
+### Technical
+
+- Linear regression for trend prediction
+- Two-sample hypothesis testing for monthly comparison
+- Correlation analysis between income and expense
+- Optimized fl_chart configuration for large datasets
+- Custom LineTouchTooltipData formatter
+- Enhanced SQL queries for accurate data aggregation
+
 ## [1.0.1] - 2025-10-27
 
 ### Changed
+
 - 🔧 Refactored codebase untuk naming convention yang lebih profesional
 - 📝 Rename semua file page dari suffix `_modern` dan `_simple` ke nama standar
 - 🧹 Cleanup file-file yang tidak terpakai (versi lama)
 - 🗂️ Reorganisasi struktur project untuk maintainability lebih baik
 
 ### Removed
+
 - ❌ Hapus file-file duplikat (login_page.dart versi lama, dll)
 - ❌ Hapus page yang tidak terpakai (dashboard_page_v2.dart, ui_showcase_page.dart)
 - ❌ Hapus widget yang tidak terpakai (app_scaffold.dart, balance_hero_card.dart)
 
 ### Technical
+
 - Renamed: `login_page_modern.dart` → `login_page.dart`
 - Renamed: `add_transaction_simple.dart` → `add_transaction_page.dart`
 - Renamed: `profile_page_modern.dart` → `profile_page.dart`
@@ -33,6 +90,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.0] - 2025-10-27
 
 ### Added
+
 - 📱 Aplikasi mobile Temanku pertama kali dirilis
 - 🎨 UI/UX modern dengan Material Design 3
 - 🔐 Sistem autentikasi (Email/Password & Google Sign-In)
@@ -54,6 +112,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Features Details
 
 #### Dashboard
+
 - Ringkasan saldo total
 - Grafik pie chart pengeluaran per kategori
 - Grafik bar chart pengeluaran 7 hari terakhir
@@ -61,12 +120,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Recent transactions
 
 #### Transaksi
+
 - Form input simple dan intuitif
 - Support pemasukan dan pengeluaran
 - Auto-reset form setelah submit
 - Animated success dialog
 
 #### Login/Register
+
 - Modern segmented control untuk tab switching
 - Smooth animations (200ms background, 150ms text)
 - Google Sign-In integration
@@ -74,6 +135,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Eye-catching logo dan tagline
 
 #### Profile
+
 - Debit card style profile display
 - Auto-uppercase nama
 - Font Courier New untuk aesthetic
@@ -81,6 +143,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Logout functionality
 
 ### Technical
+
 - Framework: Flutter 3.9.2
 - State Management: Provider
 - Database: SQLite (sqflite)
@@ -90,6 +153,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Splash Screen: flutter_native_splash
 
 ### Fixed
+
 - Navigation issues setelah add transaction
 - Login navigation ke home page
 - Form overflow pada landscape mode
@@ -100,6 +164,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Upcoming Features
 
 ### [1.1.0] - Planned
+
 - [ ] Dark mode support
 - [ ] Notification & reminders
 - [ ] Recurring transactions
@@ -116,9 +181,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Developer Notes
 
 ### Build Info
+
 - Minimum SDK: Android 21 (Lollipop)
 - Target SDK: Android 34
 - iOS Deployment Target: 12.0
 
 ### Dependencies
+
 See `pubspec.yaml` for full list of dependencies and versions.

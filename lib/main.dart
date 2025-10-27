@@ -5,6 +5,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'data/app_database.dart';
 import 'services/auth_service.dart';
 import 'state/auth_notifier.dart';
+import 'state/theme_notifier.dart';
 import 'pages/login_page.dart';
 import 'pages/home_page.dart';
 import 'pages/add_transaction_page.dart';
@@ -15,6 +16,8 @@ import 'pages/import_export_page.dart';
 import 'pages/transactions_page.dart';
 import 'pages/budgets_page.dart';
 import 'pages/savings_page.dart';
+import 'pages/trend_analysis_page.dart';
+import 'pages/monthly_comparison_page.dart';
 import 'theme/app_theme.dart';
 
 void main() async {
@@ -54,37 +57,48 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider<AuthNotifier>(
           create: (_) => AuthNotifier(_auth),
         ),
+        ChangeNotifierProvider<ThemeNotifier>(create: (_) => ThemeNotifier()),
       ],
-      child: MaterialApp(
-        title: 'Temanku',
-        theme: AppTheme.theme(),
-        debugShowCheckedModeBanner: false,
-        routes: {
-          '/login': (_) => const LoginPage(),
-          '/add': (_) => const AddTransactionPage(),
-          '/categories': (_) => const CategoriesPage(),
-          '/profile': (_) => const ProfilePage(),
-          '/accounts': (_) => const AccountTransfersPage(),
-          '/import': (_) => const ImportExportPage(),
-          '/transactions': (_) => const TransactionsPage(),
-          '/budgets': (_) => const BudgetsPage(),
-          '/savings': (_) => const SavingsPage(),
+      child: Consumer<ThemeNotifier>(
+        builder: (context, themeNotifier, _) {
+          return MaterialApp(
+            title: 'Temanku',
+            theme: AppTheme.theme(),
+            darkTheme: AppTheme.darkTheme(),
+            themeMode: themeNotifier.isDarkMode
+                ? ThemeMode.dark
+                : ThemeMode.light,
+            debugShowCheckedModeBanner: false,
+            routes: {
+              '/login': (_) => const LoginPage(),
+              '/add': (_) => const AddTransactionPage(),
+              '/categories': (_) => const CategoriesPage(),
+              '/profile': (_) => const ProfilePage(),
+              '/accounts': (_) => const AccountTransfersPage(),
+              '/import': (_) => const ImportExportPage(),
+              '/transactions': (_) => const TransactionsPage(),
+              '/budgets': (_) => const BudgetsPage(),
+              '/savings': (_) => const SavingsPage(),
+              '/trend_analysis': (_) => const TrendAnalysisPage(),
+              '/monthly_comparison': (_) => const MonthlyComparisonPage(),
+            },
+            home: FutureBuilder<void>(
+              future: _init,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState != ConnectionState.done) {
+                  return const Scaffold(
+                    body: Center(child: CircularProgressIndicator()),
+                  );
+                }
+                final auth = context.watch<AuthNotifier>();
+                if (auth.isLoggedIn) {
+                  return const HomePage();
+                }
+                return const LoginPage();
+              },
+            ),
+          );
         },
-        home: FutureBuilder<void>(
-          future: _init,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState != ConnectionState.done) {
-              return const Scaffold(
-                body: Center(child: CircularProgressIndicator()),
-              );
-            }
-            final auth = context.watch<AuthNotifier>();
-            if (auth.isLoggedIn) {
-              return const HomePage();
-            }
-            return const LoginPage();
-          },
-        ),
       ),
     );
   }

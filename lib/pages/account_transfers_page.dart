@@ -284,7 +284,7 @@ class _AccountTransfersPageState extends State<AccountTransfersPage> {
     await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).canvasColor,
       useSafeArea: true,
       enableDrag: true,
       shape: const RoundedRectangleBorder(
@@ -293,223 +293,173 @@ class _AccountTransfersPageState extends State<AccountTransfersPage> {
       builder: (context) {
         final bottom = MediaQuery.of(context).viewInsets.bottom;
         final baseTheme = Theme.of(context);
-        return Theme(
-          data: baseTheme.copyWith(
-            dropdownMenuTheme: DropdownMenuThemeData(
-              textStyle: const TextStyle(color: Colors.black87),
-              menuStyle: MenuStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
-                surfaceTintColor: MaterialStateProperty.all<Color>(
-                  Colors.white,
+        return Padding(
+          padding: EdgeInsets.fromLTRB(16, 12, 16, bottom + 16),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    margin: const EdgeInsets.only(bottom: 12),
+                    decoration: BoxDecoration(
+                      color: Colors.black12,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            canvasColor: Colors.white,
-            cardColor: Colors.white,
-            textTheme: baseTheme.textTheme.apply(
-              bodyColor: Colors.black87,
-              displayColor: Colors.black87,
-            ),
-          ),
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(16, 12, 16, bottom + 16),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Center(
-                    child: Container(
-                      width: 40,
-                      height: 4,
-                      margin: const EdgeInsets.only(bottom: 12),
-                      decoration: BoxDecoration(
-                        color: Colors.black12,
-                        borderRadius: BorderRadius.circular(2),
-                      ),
-                    ),
-                  ),
-                  const Text(
-                    'Tambah Mutasi Akun',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
-                  ),
-                  const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: DropdownButtonFormField<String>(
-                          value: from,
-                          style: const TextStyle(color: Colors.black87),
-                          dropdownColor: Colors.white,
-                          iconEnabledColor: Colors.black87,
-                          iconDisabledColor: Colors.black45,
-                          items: [
-                            DropdownMenuItem(
-                              value: 'Transfer',
-                              child: Text(
-                                'Rekening',
-                                style: const TextStyle(color: Colors.black87),
-                              ),
-                            ),
-                            DropdownMenuItem(
-                              value: 'Tunai',
-                              child: Text(
-                                'Tunai',
-                                style: const TextStyle(color: Colors.black87),
-                              ),
-                            ),
-                            DropdownMenuItem(
-                              value: 'E-Wallet',
-                              child: Text(
-                                'E-Wallet',
-                                style: const TextStyle(color: Colors.black87),
-                              ),
-                            ),
-                          ],
-                          onChanged: (v) => from = v ?? 'Transfer',
-                          decoration: const InputDecoration(labelText: 'Dari'),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: DropdownButtonFormField<String>(
-                          value: to,
-                          style: const TextStyle(color: Colors.black87),
-                          dropdownColor: Colors.white,
-                          iconEnabledColor: Colors.black87,
-                          iconDisabledColor: Colors.black45,
-                          items: [
-                            DropdownMenuItem(
-                              value: 'Transfer',
-                              child: Text(
-                                'Rekening',
-                                style: const TextStyle(color: Colors.black87),
-                              ),
-                            ),
-                            DropdownMenuItem(
-                              value: 'Tunai',
-                              child: Text(
-                                'Tunai',
-                                style: const TextStyle(color: Colors.black87),
-                              ),
-                            ),
-                            DropdownMenuItem(
-                              value: 'E-Wallet',
-                              child: Text(
-                                'E-Wallet',
-                                style: const TextStyle(color: Colors.black87),
-                              ),
-                            ),
-                          ],
-                          onChanged: (v) => to = v ?? 'Tunai',
-                          decoration: const InputDecoration(labelText: 'Ke'),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  TextField(
-                    controller: amountCtrl,
-                    decoration: const InputDecoration(
-                      labelText: 'Jumlah',
-                      prefixText: 'Rp ',
-                    ),
-                    keyboardType: const TextInputType.numberWithOptions(
-                      decimal: true,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  TextField(
-                    controller: feeCtrl,
-                    decoration: const InputDecoration(
-                      labelText: 'Biaya admin (opsional)',
-                      prefixText: 'Rp ',
-                    ),
-                    keyboardType: const TextInputType.numberWithOptions(
-                      decimal: true,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  TextField(
-                    controller: noteCtrl,
-                    decoration: const InputDecoration(labelText: 'Catatan'),
-                  ),
-                  const SizedBox(height: 8),
-                  OutlinedButton.icon(
-                    onPressed: () async {
-                      final picked = await showDatePicker(
-                        context: context,
-                        initialDate: date,
-                        firstDate: DateTime(2000),
-                        lastDate: DateTime(2100),
-                      );
-                      if (picked != null) date = picked;
-                    },
-                    icon: const Icon(Icons.calendar_today_outlined),
-                    label: Text(DateFormat('yyyy-MM-dd').format(date)),
-                  ),
-                  const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextButton(
-                          onPressed: () => Navigator.pop(context),
-                          child: const Text(
-                            'Batal',
-                            style: TextStyle(color: Colors.black87),
+                const Text(
+                  'Tambah Mutasi Akun',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: DropdownButtonFormField<String>(
+                        value: from,
+                        items: const [
+                          DropdownMenuItem(
+                            value: 'Transfer',
+                            child: Text('Rekening'),
                           ),
-                        ),
+                          DropdownMenuItem(
+                            value: 'Tunai',
+                            child: Text('Tunai'),
+                          ),
+                          DropdownMenuItem(
+                            value: 'E-Wallet',
+                            child: Text('E-Wallet'),
+                          ),
+                        ],
+                        onChanged: (v) => from = v ?? 'Transfer',
+                        decoration: const InputDecoration(labelText: 'Dari'),
                       ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: FilledButton(
-                          onPressed: () async {
-                            final userId =
-                                context.read<AuthNotifier>().user!['id'] as int;
-                            final amount = _parseAmount(amountCtrl.text);
-                            final fee = _parseAmount(feeCtrl.text) ?? 0.0;
-                            if (amount == null || amount <= 0) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Jumlah tidak valid'),
-                                ),
-                              );
-                              return;
-                            }
-                            if (from == to) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Pilih akun yang berbeda'),
-                                ),
-                              );
-                              return;
-                            }
-                            await context
-                                .read<AppDatabase>()
-                                .insertAccountTransferWithFee(
-                                  userId: userId,
-                                  dateIso: DateFormat(
-                                    'yyyy-MM-dd',
-                                  ).format(date),
-                                  fromAccount: from,
-                                  toAccount: to,
-                                  amount: amount,
-                                  note: noteCtrl.text,
-                                  adminFee: fee,
-                                );
-                            if (!mounted) return;
-                            Navigator.pop(context);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Mutasi disimpan')),
-                            );
-                            await _load();
-                          },
-                          child: const Text('Simpan'),
-                        ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: DropdownButtonFormField<String>(
+                        value: to,
+                        items: const [
+                          DropdownMenuItem(
+                            value: 'Transfer',
+                            child: Text('Rekening'),
+                          ),
+                          DropdownMenuItem(
+                            value: 'Tunai',
+                            child: Text('Tunai'),
+                          ),
+                          DropdownMenuItem(
+                            value: 'E-Wallet',
+                            child: Text('E-Wallet'),
+                          ),
+                        ],
+                        onChanged: (v) => to = v ?? 'Tunai',
+                        decoration: const InputDecoration(labelText: 'Ke'),
                       ),
-                    ],
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                TextField(
+                  controller: amountCtrl,
+                  decoration: const InputDecoration(
+                    labelText: 'Jumlah',
+                    prefixText: 'Rp ',
                   ),
-                ],
-              ),
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                TextField(
+                  controller: feeCtrl,
+                  decoration: const InputDecoration(
+                    labelText: 'Biaya admin (opsional)',
+                    prefixText: 'Rp ',
+                  ),
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                TextField(
+                  controller: noteCtrl,
+                  decoration: const InputDecoration(labelText: 'Catatan'),
+                ),
+                const SizedBox(height: 8),
+                OutlinedButton.icon(
+                  onPressed: () async {
+                    final picked = await showDatePicker(
+                      context: context,
+                      initialDate: date,
+                      firstDate: DateTime(2000),
+                      lastDate: DateTime(2100),
+                    );
+                    if (picked != null) date = picked;
+                  },
+                  icon: const Icon(Icons.calendar_today_outlined),
+                  label: Text(DateFormat('yyyy-MM-dd').format(date)),
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text('Batal'),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: FilledButton(
+                        onPressed: () async {
+                          final userId =
+                              context.read<AuthNotifier>().user!['id'] as int;
+                          final amount = _parseAmount(amountCtrl.text);
+                          final fee = _parseAmount(feeCtrl.text) ?? 0.0;
+                          if (amount == null || amount <= 0) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Jumlah tidak valid'),
+                              ),
+                            );
+                            return;
+                          }
+                          if (from == to) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Pilih akun yang berbeda'),
+                              ),
+                            );
+                            return;
+                          }
+                          await context
+                              .read<AppDatabase>()
+                              .insertAccountTransferWithFee(
+                                userId: userId,
+                                dateIso: DateFormat('yyyy-MM-dd').format(date),
+                                fromAccount: from,
+                                toAccount: to,
+                                amount: amount,
+                                note: noteCtrl.text,
+                                adminFee: fee,
+                              );
+                          if (!mounted) return;
+                          Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Mutasi disimpan')),
+                          );
+                          await _load();
+                        },
+                        child: const Text('Simpan'),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         );

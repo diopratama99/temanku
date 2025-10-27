@@ -279,7 +279,7 @@ class _LoginPageState extends State<LoginPage>
             ),
           ),
           const SizedBox(height: AppTheme.space16),
-          PasswordFormField(controller: _loginPassword, label: ''),
+          PasswordFormField(controller: _loginPassword, label: 'Password'),
           const SizedBox(height: AppTheme.space24),
           SizedBox(
             width: double.infinity,
@@ -361,7 +361,7 @@ class _LoginPageState extends State<LoginPage>
           const SizedBox(height: AppTheme.space16),
           PasswordFormField(
             controller: _regPassword,
-            label: '',
+            label: 'Password',
             showStrengthIndicator: true,
           ),
           const SizedBox(height: AppTheme.space24),

@@ -12,8 +12,7 @@ class AddTransactionPage extends StatefulWidget {
   const AddTransactionPage({super.key, this.showHistoryButton = true});
 
   @override
-  State<AddTransactionPage> createState() =>
-      _AddTransactionPageState();
+  State<AddTransactionPage> createState() => _AddTransactionPageState();
 }
 
 class _AddTransactionPageState extends State<AddTransactionPage> {
@@ -259,7 +258,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         backgroundColor: const Color(0xFF157347),
         elevation: 0,
@@ -528,9 +527,11 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                               vertical: 12,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: Theme.of(context).cardColor,
                               borderRadius: BorderRadius.circular(14),
-                              border: Border.all(color: Colors.grey.shade200),
+                              border: Border.all(
+                                color: Theme.of(context).dividerColor,
+                              ),
                             ),
                             child: Row(
                               children: [
@@ -620,10 +621,10 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                                   vertical: 12,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: Colors.white,
+                                  color: Theme.of(context).cardColor,
                                   borderRadius: BorderRadius.circular(14),
                                   border: Border.all(
-                                    color: Colors.grey.shade200,
+                                    color: Theme.of(context).dividerColor,
                                   ),
                                 ),
                                 child: Row(
@@ -666,9 +667,11 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                                 vertical: 12,
                               ),
                               decoration: BoxDecoration(
-                                color: Colors.white,
+                                color: Theme.of(context).cardColor,
                                 borderRadius: BorderRadius.circular(14),
-                                border: Border.all(color: Colors.grey.shade200),
+                                border: Border.all(
+                                  color: Theme.of(context).dividerColor,
+                                ),
                               ),
                               child: Row(
                                 children: [
@@ -731,8 +734,8 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                     // Keterangan - Compact
                     TextField(
                       controller: _payee,
-                      maxLines: 2,
-                      textAlignVertical: TextAlignVertical.center,
+                      minLines: 1,
+                      maxLines: 3,
                       decoration: InputDecoration(
                         labelText: 'Keterangan',
                         labelStyle: const TextStyle(
@@ -754,11 +757,15 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                         ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(14),
-                          borderSide: BorderSide(color: Colors.grey.shade200),
+                          borderSide: BorderSide(
+                            color: Theme.of(context).dividerColor,
+                          ),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(14),
-                          borderSide: BorderSide(color: Colors.grey.shade200),
+                          borderSide: BorderSide(
+                            color: Theme.of(context).dividerColor,
+                          ),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(14),
@@ -768,13 +775,14 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                           ),
                         ),
                         filled: true,
-                        fillColor: Colors.white,
+                        fillColor: Theme.of(context).cardColor,
+                        alignLabelWithHint: true,
                         contentPadding: const EdgeInsets.symmetric(
                           horizontal: 16,
-                          vertical: 14,
+                          vertical: 18,
                         ),
                       ),
-                      style: const TextStyle(fontSize: 14),
+                      style: const TextStyle(fontSize: 14, height: 1.4),
                     ),
 
                     const SizedBox(height: 12),
@@ -782,8 +790,8 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                     // Catatan - Compact
                     TextField(
                       controller: _notes,
-                      maxLines: 2,
-                      textAlignVertical: TextAlignVertical.center,
+                      minLines: 1,
+                      maxLines: 3,
                       decoration: InputDecoration(
                         labelText: 'Catatan (Opsional)',
                         labelStyle: const TextStyle(
@@ -805,11 +813,15 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                         ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(14),
-                          borderSide: BorderSide(color: Colors.grey.shade200),
+                          borderSide: BorderSide(
+                            color: Theme.of(context).dividerColor,
+                          ),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(14),
-                          borderSide: BorderSide(color: Colors.grey.shade200),
+                          borderSide: BorderSide(
+                            color: Theme.of(context).dividerColor,
+                          ),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(14),
@@ -819,13 +831,14 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                           ),
                         ),
                         filled: true,
-                        fillColor: Colors.white,
+                        fillColor: Theme.of(context).cardColor,
+                        alignLabelWithHint: true,
                         contentPadding: const EdgeInsets.symmetric(
                           horizontal: 16,
-                          vertical: 14,
+                          vertical: 18,
                         ),
                       ),
-                      style: const TextStyle(fontSize: 14),
+                      style: const TextStyle(fontSize: 14, height: 1.4),
                     ),
 
                     const SizedBox(height: 16),

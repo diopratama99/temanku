@@ -116,3 +116,8 @@ app.*.map.json
 *.g.dart
 *.freezed.dart
 *.mocks.dart
+
+# Test data and random generated data
+data_test_random/
+**/data_test_random/
+

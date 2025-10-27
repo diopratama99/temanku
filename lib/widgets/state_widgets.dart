@@ -222,6 +222,11 @@ class ErrorStateWidget extends StatelessWidget {
 
 /// Success snackbar helper
 void showSuccessSnackbar(BuildContext context, String message) {
+  final mediaQuery = MediaQuery.of(context);
+  final screenHeight = mediaQuery.size.height;
+  final appBarHeight =
+      kToolbarHeight + mediaQuery.padding.top; // ~56 + status bar
+
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
       content: Row(
@@ -235,6 +240,12 @@ void showSuccessSnackbar(BuildContext context, String message) {
       ),
       backgroundColor: AppTheme.incomeColor,
       behavior: SnackBarBehavior.floating,
+      margin: EdgeInsets.fromLTRB(
+        AppTheme.space16, // left
+        appBarHeight + 80, // top - JAUH LEBIH BAWAH LAGI BOS!
+        AppTheme.space16, // right
+        screenHeight - appBarHeight - 152, // bottom - disesuaikan
+      ),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
       ),

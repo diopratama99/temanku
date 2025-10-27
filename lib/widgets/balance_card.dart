@@ -161,7 +161,9 @@ class _MoneyIndicator extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(4),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
+                  color: isIncome
+                      ? AppTheme.incomeColor
+                      : AppTheme.expenseColor,
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Icon(icon, color: Colors.white, size: 12),

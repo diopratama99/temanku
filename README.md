@@ -13,11 +13,19 @@ Temanku adalah aplikasi manajemen keuangan pribadi yang membantu Anda melacak pe
 - 🏷️ **Kategori** - Kelola kategori transaksi sesuai kebutuhan
 - 🏦 **Akun** - Kelola berbagai akun seperti cash, bank, e-wallet
 - 💳 **Transfer Antar Akun** - Transfer dana antar akun dengan mudah
-- 🎯 **Budget** - Atur budget per kategori
+- 🎯 **Budget** - Atur budget per kategori dengan monitoring real-time
 - 💎 **Tabungan** - Catat dan monitor target tabungan
 - 📈 **Riwayat** - Lihat riwayat transaksi lengkap dengan filter
-- 📤 **Import/Export** - Import dan export data dalam format CSV
+- � **Statistik** - Analisa keuangan dengan berbagai chart dan insight
+- 📈 **Trend Analysis** - Analisa tren keuangan dengan prediksi AI
+  - Grafik line chart dengan trend prediction
+  - Mode bulanan dan mingguan
+  - Correlation analysis income vs expense
+  - Statistical insights (mean, std dev, etc)
+- 🔄 **Monthly Comparison** - Bandingkan pengeluaran 2 bulan dengan uji hipotesis statistik
+- �📤 **Import/Export** - Import dan export data dalam format CSV
 - 🔐 **Autentikasi** - Login dengan email/password atau Google Sign-In
+- 🔄 **Reset Data** - Hapus semua data dengan verifikasi 2 langkah
 - 🌙 **Dark Mode** - Support mode gelap (coming soon)
 
 ## 🚀 Getting Started
@@ -33,26 +41,31 @@ Temanku adalah aplikasi manajemen keuangan pribadi yang membantu Anda melacak pe
 ### Installation
 
 1. Clone repository ini:
+
 ```bash
 git clone https://github.com/diopratama99/temanku.git
 ```
 
 2. Install dependencies:
+
 ```bash
 flutter pub get
 ```
 
 3. Generate launcher icons:
+
 ```bash
 dart run flutter_launcher_icons
 ```
 
 4. Generate splash screen:
+
 ```bash
 dart run flutter_native_splash:create
 ```
 
 5. Run aplikasi:
+
 ```bash
 flutter run
 ```
@@ -60,30 +73,37 @@ flutter run
 ## 🏗️ Build
 
 ### Android APK
+
 ```bash
 flutter build apk --release
 ```
 
 ### Android App Bundle
+
 ```bash
 flutter build appbundle --release
 ```
 
 ### iOS
+
 ```bash
 flutter build ios --release
 ```
 
 ## 📦 Tech Stack
 
-- **Framework**: Flutter
+- **Framework**: Flutter 3.9.2+
 - **State Management**: Provider
 - **Database**: SQLite (sqflite)
 - **Charts**: fl_chart
-- **Authentication**: Google Sign-In (coming soon)
+- **Statistical Analysis**: Custom implementation (Linear Regression, Hypothesis Testing)
+- **Authentication**: Google Sign-In
+- **File Handling**: file_picker, share_plus
+- **Image Handling**: image_picker
 - **Icons**: flutter_launcher_icons
 - **Splash Screen**: flutter_native_splash
 - **Fonts**: Google Fonts
+- **Number Formatting**: intl (Indonesian locale)
 
 ## 📱 Screenshots
 
@@ -107,6 +127,8 @@ lib/
 │   ├── budgets_page.dart          # Budget planning
 │   ├── savings_page.dart          # Savings goals
 │   ├── statistics_page.dart       # Charts & analytics
+│   ├── trend_analysis_page.dart   # Trend analysis with AI prediction
+│   ├── monthly_comparison_page.dart # Monthly expense comparison
 │   ├── profile_page.dart          # User profile
 │   └── import_export_page.dart    # Import/Export data
 ├── services/
@@ -116,7 +138,8 @@ lib/
 ├── theme/
 │   └── app_theme.dart       # Theme configuration
 ├── utils/
-│   └── snackbar_utils.dart  # Helper utilities
+│   ├── snackbar_utils.dart  # Snackbar helpers
+│   └── trend_analysis.dart  # Statistical analysis utilities
 └── widgets/
     ├── app_bottom_navigation.dart
     ├── balance_card.dart
@@ -145,21 +168,25 @@ Aplikasi menggunakan SQLite untuk penyimpanan lokal. Database akan otomatis dibu
 ## 👨‍💻 Development
 
 ### Run in Debug Mode
+
 ```bash
 flutter run
 ```
 
 ### Run Tests
+
 ```bash
 flutter test
 ```
 
 ### Analyze Code
+
 ```bash
 flutter analyze
 ```
 
 ### Format Code
+
 ```bash
 flutter format .
 ```
@@ -171,6 +198,7 @@ Copyright © 2025 Temanku. All rights reserved.
 ## 👤 Author
 
 **Dio Pratama**
+
 - GitHub: [@diopratama99](https://github.com/diopratama99)
 
 ## 🤝 Contributing
