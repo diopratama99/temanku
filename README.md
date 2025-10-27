@@ -34,8 +34,7 @@ Temanku adalah aplikasi manajemen keuangan pribadi yang membantu Anda melacak pe
 
 1. Clone repository ini:
 ```bash
-git clone https://github.com/diopratama99/temanku-webapp.git
-cd temanku-webapp/temanku_mobile
+git clone https://github.com/diopratama99/temanku.git
 ```
 
 2. Install dependencies:
