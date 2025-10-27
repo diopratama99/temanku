@@ -107,8 +107,6 @@ flutter build ios --release
 
 ## 📱 Screenshots
 
-## 📸 Screenshots
-
 <p align="center">
   <img src="screenshots/1_dashboard.png" width="200"/>
   <img src="screenshots/2_statistik_ringkasan.png" width="200"/>
