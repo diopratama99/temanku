@@ -7,14 +7,14 @@ import '../state/auth_notifier.dart';
 import '../theme/app_theme.dart';
 
 /// Modern Statistics Page - Financial Analytics & Insights
-class StatisticsPageModern extends StatefulWidget {
-  const StatisticsPageModern({super.key});
+class StatisticsPage extends StatefulWidget {
+  const StatisticsPage({super.key});
 
   @override
-  State<StatisticsPageModern> createState() => _StatisticsPageModernState();
+  State<StatisticsPage> createState() => _StatisticsPageState();
 }
 
-class _StatisticsPageModernState extends State<StatisticsPageModern> {
+class _StatisticsPageState extends State<StatisticsPage> {
   late DateTime _start;
   late DateTime _end;
   Map<String, dynamic>? _data;

@@ -5,17 +5,16 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'data/app_database.dart';
 import 'services/auth_service.dart';
 import 'state/auth_notifier.dart';
-import 'pages/login_page_modern.dart';
+import 'pages/login_page.dart';
 import 'pages/home_page.dart';
-import 'pages/add_transaction_simple.dart';
-import 'pages/categories_page_modern.dart';
-import 'pages/profile_page_modern.dart';
+import 'pages/add_transaction_page.dart';
+import 'pages/categories_page.dart';
+import 'pages/profile_page.dart';
 import 'pages/account_transfers_page.dart';
 import 'pages/import_export_page.dart';
-import 'pages/ui_showcase_page.dart';
-import 'pages/transactions_page_modern.dart';
-import 'pages/budgets_page_modern.dart';
-import 'pages/savings_page_modern.dart';
+import 'pages/transactions_page.dart';
+import 'pages/budgets_page.dart';
+import 'pages/savings_page.dart';
 import 'theme/app_theme.dart';
 
 void main() async {
@@ -61,16 +60,15 @@ class _MyAppState extends State<MyApp> {
         theme: AppTheme.theme(),
         debugShowCheckedModeBanner: false,
         routes: {
-          '/login': (_) => const LoginPageModern(),
-          '/add': (_) => const AddTransactionSimplePage(),
-          '/categories': (_) => const CategoriesPageModern(),
-          '/profile': (_) => const ProfilePageModern(),
+          '/login': (_) => const LoginPage(),
+          '/add': (_) => const AddTransactionPage(),
+          '/categories': (_) => const CategoriesPage(),
+          '/profile': (_) => const ProfilePage(),
           '/accounts': (_) => const AccountTransfersPage(),
           '/import': (_) => const ImportExportPage(),
-          '/showcase': (_) => const UIShowcasePage(),
-          '/transactions': (_) => const TransactionsPageModern(),
-          '/budgets': (_) => const BudgetsPageModern(),
-          '/savings': (_) => const SavingsPageModern(),
+          '/transactions': (_) => const TransactionsPage(),
+          '/budgets': (_) => const BudgetsPage(),
+          '/savings': (_) => const SavingsPage(),
         },
         home: FutureBuilder<void>(
           future: _init,
@@ -84,7 +82,7 @@ class _MyAppState extends State<MyApp> {
             if (auth.isLoggedIn) {
               return const HomePage();
             }
-            return const LoginPageModern();
+            return const LoginPage();
           },
         ),
       ),

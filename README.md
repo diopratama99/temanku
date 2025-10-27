@@ -97,23 +97,33 @@ lib/
 ├── data/
 │   └── app_database.dart    # Database helper & models
 ├── pages/
-│   ├── home_page.dart       # Dashboard
-│   ├── login_page_modern.dart
-│   ├── add_transaction_simple.dart
-│   ├── transactions_page.dart
-│   ├── categories_page.dart
-│   ├── accounts_page.dart
-│   ├── budgets_page.dart
-│   ├── savings_page.dart
-│   └── profile_page_modern.dart
+│   ├── home_page.dart       # Home with bottom navigation
+│   ├── dashboard_page.dart  # Dashboard overview
+│   ├── login_page.dart      # Login & Register
+│   ├── add_transaction_page.dart  # Add transaction form
+│   ├── transactions_page.dart     # Transaction history
+│   ├── categories_page.dart       # Category management
+│   ├── account_transfers_page.dart # Account transfers
+│   ├── budgets_page.dart          # Budget planning
+│   ├── savings_page.dart          # Savings goals
+│   ├── statistics_page.dart       # Charts & analytics
+│   ├── profile_page.dart          # User profile
+│   └── import_export_page.dart    # Import/Export data
 ├── services/
 │   └── auth_service.dart    # Authentication service
+├── state/
+│   └── auth_notifier.dart   # Authentication state
 ├── theme/
 │   └── app_theme.dart       # Theme configuration
 ├── utils/
 │   └── snackbar_utils.dart  # Helper utilities
 └── widgets/
-    └── app_bottom_navigation.dart
+    ├── app_bottom_navigation.dart
+    ├── balance_card.dart
+    ├── form_fields.dart
+    ├── main_navigation_scaffold.dart
+    ├── state_widgets.dart
+    └── transaction_list_item.dart
 ```
 
 ## 🔧 Configuration

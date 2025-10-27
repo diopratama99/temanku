@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import '../widgets/main_navigation_scaffold.dart';
-import 'dashboard_page_v2.dart';
-import 'statistics_page_modern.dart';
-import 'add_transaction_simple.dart';
-import 'budgets_page_modern.dart';
-import 'profile_page_modern.dart';
+import 'dashboard_page.dart';
+import 'statistics_page.dart';
+import 'add_transaction_page.dart';
+import 'budgets_page.dart';
+import 'profile_page.dart';
 
 /// Home page with bottom navigation
 /// Routes: Dashboard, Statistics, Add Transaction, Budgets, Profile
@@ -20,11 +20,11 @@ class _HomePageState extends State<HomePage> {
 
   // Pages for each navigation destination
   final List<Widget> _pages = const [
-    DashboardPageV2(),
-    StatisticsPageModern(),
-    AddTransactionSimplePage(),
-    BudgetsPageModern(),
-    ProfilePageModern(),
+    DashboardPage(),
+    StatisticsPage(),
+    AddTransactionPage(),
+    BudgetsPage(),
+    ProfilePage(),
   ];
 
   // AppBar titles for each page

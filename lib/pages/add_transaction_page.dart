@@ -4,19 +4,19 @@ import 'package:provider/provider.dart';
 
 import '../data/app_database.dart';
 import '../state/auth_notifier.dart';
-import 'transactions_page_modern.dart';
+import 'transactions_page.dart';
 
-class AddTransactionSimplePage extends StatefulWidget {
+class AddTransactionPage extends StatefulWidget {
   final bool showHistoryButton;
 
-  const AddTransactionSimplePage({super.key, this.showHistoryButton = true});
+  const AddTransactionPage({super.key, this.showHistoryButton = true});
 
   @override
-  State<AddTransactionSimplePage> createState() =>
-      _AddTransactionSimplePageState();
+  State<AddTransactionPage> createState() =>
+      _AddTransactionPageState();
 }
 
-class _AddTransactionSimplePageState extends State<AddTransactionSimplePage> {
+class _AddTransactionPageState extends State<AddTransactionPage> {
   DateTime _date = DateTime.now();
   String _type = 'expense';
   int? _categoryId;
@@ -282,7 +282,7 @@ class _AddTransactionSimplePageState extends State<AddTransactionSimplePage> {
                       context,
                       MaterialPageRoute(
                         builder: (_) =>
-                            const TransactionsPageModern(hideAddButton: true),
+                            const TransactionsPage(hideAddButton: true),
                       ),
                     );
                   },
