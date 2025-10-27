@@ -107,7 +107,29 @@ flutter build ios --release
 
 ## 📱 Screenshots
 
-_Coming soon_
+### 🏠 Dashboard
+![Dashboard](screenshots/1_dashboard.png)
+
+### 📊 Statistik Ringkasan
+![Statistik Ringkasan](screenshots/2_statistik_ringkasan.png)
+
+### 📈 Statistik Detail
+![Statistik Detail](screenshots/3_statistik_detail.png)
+
+### ➕ Add Transaction
+![Add Transaction](screenshots/4_add_transaction.png)
+
+### 💰 Budgeting
+![Budgeting](screenshots/5_budgeting.png)
+
+### 📉 Analisa Tren Keuangan
+![Analisa Tren Keuangan](screenshots/6_analisa_tren_keuangan.png)
+
+### 🔄 Perbandingan Bulanan
+![Perbandingan Bulanan](screenshots/7_perbandingan_bulanan.png)
+
+### 🏦 Tabungan
+![Tabungan](screenshots/8_tabungan.png)
 
 ## 🗂️ Struktur Project
 
