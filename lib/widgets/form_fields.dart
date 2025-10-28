@@ -184,8 +184,10 @@ class _PasswordFormFieldState extends State<PasswordFormField> {
           child: TextFormField(
             controller: widget.controller,
             obscureText: _obscureText,
+            style: const TextStyle(color: AppTheme.textPrimary),
             decoration: InputDecoration(
               labelText: widget.label,
+              hintStyle: TextStyle(color: Colors.grey.shade500),
               prefixIcon: const Icon(Icons.lock_outline),
               helperText: widget.helperText,
               helperMaxLines: 2,

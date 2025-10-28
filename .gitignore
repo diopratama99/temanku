@@ -110,7 +110,9 @@ app.*.map.json
 # google-services.json
 # GoogleService-Info.plist
 *.env
+.env
 .env.*
+!.env.example
 
 # Generated files
 *.g.dart
@@ -120,4 +122,7 @@ app.*.map.json
 # Test data and random generated data
 data_test_random/
 **/data_test_random/
+
+# Google Sign-In configuration (contains sensitive Client IDs)
+**/android/app/src/main/res/values/strings.xml
 

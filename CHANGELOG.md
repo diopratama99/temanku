@@ -5,6 +5,60 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.1] - 2025-10-28
+
+### Added
+
+- ☁️ **Google Drive Backup** - Backup and restore data to Google Drive
+  - Auto-creates 'Temanku Backups' folder in Drive
+  - Upload/download database backups
+  - List and delete old backups
+  - Works offline (only needs internet during backup)
+
+### Improved
+
+- 🔐 **Google Sign-In Configuration** - Updated OAuth credentials
+
+  - Package name changed to `com.temanlabs.temanku`
+  - Configured Android and Web OAuth Client IDs
+  - Web Client ID configured for Drive API access
+  - Enhanced error messages with setup instructions
+
+- 🎨 **Login Page UI** - Better user experience
+
+  - Changed "Email" field to "Username" with appropriate icon
+  - Keyboard-responsive layout (logo hides when keyboard opens)
+  - Working password visibility toggles for both login and register
+  - Enhanced Google Sign-In button with actual Google logo
+  - Consistent text field styling across all inputs
+  - Username uses `Icons.person_outline`, Nama Lengkap uses `Icons.badge_outlined`
+
+- 📤 **Import/Export Notifications** - Better user feedback
+  - Fixed SnackBar layout overflow issues
+  - Added "OK" button to dismiss notifications
+  - Enhanced error messages with detailed instructions
+  - Proper duration settings (3-5 seconds)
+
+### Fixed
+
+- 🔧 **Text Field Styling** - Consistent appearance
+  - All text fields now use `AppTheme.textPrimary` color
+  - Hint text uses grey shade 500 for better contrast
+  - Password fields match regular field styling
+
+### Changed
+
+- 📦 **Package Name** - Updated to production package
+  - Changed from `com.example.temanku_mobile` to `com.temanlabs.temanku`
+  - Updated MainActivity.kt to new package structure
+
+### Technical
+
+- Google Drive API v3 integration with googleapis package
+- serverClientId parameter for OAuth ID token retrieval
+- Enhanced DriveBackupService with error handling
+- SQLite database backup/restore functionality
+
 ## [1.5.0] - 2025-10-27
 
 ### Added
@@ -20,6 +74,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Improved
 
 - 📈 **Chart Visualization** - Optimasi tampilan grafik untuk dataset besar
+
   - Label X-axis dengan rotasi untuk readability lebih baik
   - Smart label interval (mingguan: setiap 4, bulanan: setiap 2)
   - Y-axis format dengan prefix "Rp" dan tanpa desimal
@@ -28,6 +83,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Garis prediksi tren yang tidak over-extend
 
 - 🎯 **Budget Display** - Fix budget showing Rp 0 in dashboard
+
   - Corrected SQL query column alias from `amount` to `limit_amount`
   - Budget limits now display correctly in financial summary
 

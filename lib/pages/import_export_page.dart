@@ -3,13 +3,16 @@ import 'dart:io';
 import 'package:csv/csv.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import '../data/app_database.dart';
+import '../services/drive_backup_service.dart';
 import '../state/auth_notifier.dart';
 
 class ImportExportPage extends StatefulWidget {
@@ -23,6 +26,8 @@ class _ImportExportPageState extends State<ImportExportPage> {
   late DateTime _start;
   late DateTime _end;
   bool _busy = false;
+  final _driveService = DriveBackupService();
+  GoogleSignInAccount? _googleUser;
 
   @override
   void initState() {
@@ -30,6 +35,16 @@ class _ImportExportPageState extends State<ImportExportPage> {
     final now = DateTime.now();
     _start = DateTime(now.year, now.month, 1);
     _end = DateTime(now.year, now.month + 1, 0);
+    _checkGoogleSignIn();
+  }
+
+  Future<void> _checkGoogleSignIn() async {
+    final googleSignIn = GoogleSignIn(
+      scopes: ['email', 'https://www.googleapis.com/auth/drive.file'],
+      serverClientId: dotenv.env['GOOGLE_WEB_CLIENT_ID'] ?? '',
+    );
+    _googleUser = await googleSignIn.signInSilently();
+    if (mounted) setState(() {});
   }
 
   String _iso(DateTime d) => DateFormat('yyyy-MM-dd').format(d);
@@ -77,6 +92,150 @@ class _ImportExportPageState extends State<ImportExportPage> {
     await file.writeAsString(csv);
     await Share.shareXFiles([XFile(file.path)], text: 'Export Temanku');
     setState(() => _busy = false);
+  }
+
+  Future<void> _backupToDrive() async {
+    // Check if user is signed in with Google
+    if (_googleUser == null) {
+      final googleSignIn = GoogleSignIn(
+        scopes: ['email', 'https://www.googleapis.com/auth/drive.file'],
+        serverClientId: dotenv.env['GOOGLE_WEB_CLIENT_ID'] ?? '',
+      );
+
+      try {
+        _googleUser = await googleSignIn.signIn();
+        if (_googleUser == null) {
+          if (!mounted) return;
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: const Text('Login Google dibatalkan'),
+              duration: const Duration(seconds: 3),
+              action: SnackBarAction(
+                label: 'OK',
+                textColor: Colors.white,
+                onPressed: () {},
+              ),
+            ),
+          );
+          return;
+        }
+      } catch (e) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error login Google: ${e.toString()}'),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 4),
+            action: SnackBarAction(
+              label: 'OK',
+              textColor: Colors.white,
+              onPressed: () {},
+            ),
+          ),
+        );
+        return;
+      }
+    }
+
+    setState(() => _busy = true);
+
+    try {
+      // Export CSV first
+      final db = context.read<AppDatabase>();
+      final userId = context.read<AuthNotifier>().user!['id'] as int;
+      final rows = await db.db.rawQuery(
+        '''
+        SELECT t.date, t.type, c.name as category, t.amount, t.source_or_payee, t.account, t.notes
+        FROM transactions t JOIN categories c ON c.id=t.category_id
+        WHERE t.user_id=? AND t.date BETWEEN ? AND ?
+        ORDER BY t.date ASC
+      ''',
+        [userId, _iso(_start), _iso(_end)],
+      );
+
+      final csvRows = <List<dynamic>>[
+        [
+          'date',
+          'type',
+          'category',
+          'amount',
+          'source_or_payee',
+          'account',
+          'notes',
+        ],
+        ...rows.map(
+          (r) => [
+            r['date'],
+            r['type'],
+            r['category'],
+            r['amount'],
+            r['source_or_payee'] ?? '',
+            r['account'] ?? '',
+            r['notes'] ?? '',
+          ],
+        ),
+      ];
+
+      final csv = const ListToCsvConverter().convert(csvRows);
+      final tempDir = await getTemporaryDirectory();
+      final fileName =
+          'temanku_backup_${_iso(_start)}_${_iso(_end)}_${DateTime.now().millisecondsSinceEpoch}.csv';
+      final file = File(p.join(tempDir.path, fileName));
+      await file.writeAsString(csv);
+
+      // Upload to Google Drive
+      final fileId = await _driveService.uploadToGoogleDrive(
+        file: file,
+        fileName: fileName,
+        googleUser: _googleUser!,
+      );
+
+      if (!mounted) return;
+
+      if (fileId != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('✅ Backup berhasil di-upload ke Google Drive'),
+            backgroundColor: Colors.green,
+            duration: const Duration(seconds: 3),
+            action: SnackBarAction(
+              label: 'OK',
+              textColor: Colors.white,
+              onPressed: () {},
+            ),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('Gagal upload ke Google Drive'),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 4),
+            action: SnackBarAction(
+              label: 'OK',
+              textColor: Colors.white,
+              onPressed: () {},
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error backup: ${e.toString()}'),
+          backgroundColor: Colors.red,
+          duration: const Duration(seconds: 5),
+          action: SnackBarAction(
+            label: 'OK',
+            textColor: Colors.white,
+            onPressed: () {},
+          ),
+        ),
+      );
+    } finally {
+      setState(() => _busy = false);
+    }
   }
 
   Future<void> _importCsv() async {
@@ -194,8 +353,25 @@ class _ImportExportPageState extends State<ImportExportPage> {
           FilledButton.icon(
             onPressed: _busy ? null : _exportCsv,
             icon: const Icon(Icons.download),
-            label: const Text('Export CSV'),
+            label: const Text('Export CSV (Share)'),
           ),
+          const SizedBox(height: 12),
+          FilledButton.icon(
+            onPressed: _busy ? null : _backupToDrive,
+            icon: const Icon(Icons.cloud_upload),
+            label: const Text('Backup to Google Drive'),
+            style: FilledButton.styleFrom(backgroundColor: Colors.green),
+          ),
+          const SizedBox(height: 8),
+          if (_googleUser != null)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Text(
+                '✅ Signed in: ${_googleUser!.email}',
+                style: TextStyle(fontSize: 12, color: Colors.green.shade700),
+                textAlign: TextAlign.center,
+              ),
+            ),
           const SizedBox(height: 24),
           FilledButton.icon(
             onPressed: _busy ? null : _importCsv,

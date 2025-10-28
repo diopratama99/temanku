@@ -71,6 +71,7 @@ Gunakan format [Conventional Commits](https://www.conventionalcommits.org/):
 - `chore:` untuk maintenance
 
 Contoh:
+
 ```
 feat: tambah dark mode support
 fix: perbaiki crash saat add transaction
@@ -110,13 +111,16 @@ lib/
 ## 💡 Questions?
 
 Jika ada pertanyaan, feel free untuk:
+
 - Buat issue dengan label "question"
-- Contact: [@diopratama99](https://github.com/diopratama99)
+- Contact: TemanLabs - [@diopratama99](https://github.com/diopratama99)
 
 ## 📜 Code of Conduct
 
 Harap bersikap sopan dan respektful kepada semua kontributor.
 
 ---
+
+**TemanLabs** - Made with ❤️ using Flutter
 
 Happy coding! 🚀

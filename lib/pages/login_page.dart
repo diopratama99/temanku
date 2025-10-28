@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import '../data/app_database.dart';
 import '../state/auth_notifier.dart';
 import '../theme/app_theme.dart';
-import '../widgets/form_fields.dart';
 import '../widgets/state_widgets.dart';
 
 class LoginPage extends StatefulWidget {
@@ -23,6 +22,8 @@ class _LoginPageState extends State<LoginPage>
   final _regEmail = TextEditingController();
   final _regPassword = TextEditingController();
   bool _busy = false;
+  bool _obscureLoginPassword = true;
+  bool _obscureRegPassword = true;
 
   @override
   void initState() {
@@ -116,22 +117,28 @@ class _LoginPageState extends State<LoginPage>
       // Will be redirected by MaterialApp home builder
     }
 
+    final isKeyboardVisible = MediaQuery.of(context).viewInsets.bottom > 0;
+
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppTheme.space24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // App Logo/Icon
-              const SizedBox(height: AppTheme.space24),
-              Image.asset(
-                'assets/images/temanku_icon.png',
-                width: 140,
-                height: 140,
-              ),
-              const SizedBox(height: AppTheme.space8),
+              // App Logo/Icon - Hide when keyboard is visible
+              if (!isKeyboardVisible) ...[
+                const SizedBox(height: AppTheme.space24),
+                Image.asset(
+                  'assets/images/temanku_icon.png',
+                  width: 140,
+                  height: 140,
+                ),
+                const SizedBox(height: AppTheme.space8),
+              ] else ...[
+                const SizedBox(height: AppTheme.space16),
+              ],
 
               // App Title
               Text(
@@ -151,7 +158,9 @@ class _LoginPageState extends State<LoginPage>
                 textAlign: TextAlign.center,
               ),
 
-              const SizedBox(height: AppTheme.space48),
+              SizedBox(
+                height: isKeyboardVisible ? AppTheme.space24 : AppTheme.space48,
+              ),
 
               // Login/Register Tabs - Modern Segmented Control
               Container(
@@ -271,15 +280,39 @@ class _LoginPageState extends State<LoginPage>
         children: [
           TextField(
             controller: _loginEmail,
-            keyboardType: TextInputType.emailAddress,
-            decoration: const InputDecoration(
-              hintText: 'Email',
-              prefixIcon: Icon(Icons.email_outlined),
-              border: OutlineInputBorder(),
+            keyboardType: TextInputType.text,
+            style: const TextStyle(color: AppTheme.textPrimary),
+            decoration: InputDecoration(
+              hintText: 'Username',
+              hintStyle: TextStyle(color: Colors.grey.shade500),
+              prefixIcon: const Icon(Icons.person_outline),
+              border: const OutlineInputBorder(),
             ),
           ),
           const SizedBox(height: AppTheme.space16),
-          PasswordFormField(controller: _loginPassword, label: 'Password'),
+          TextField(
+            controller: _loginPassword,
+            obscureText: _obscureLoginPassword,
+            style: const TextStyle(color: AppTheme.textPrimary),
+            decoration: InputDecoration(
+              hintText: 'Password',
+              hintStyle: TextStyle(color: Colors.grey.shade500),
+              prefixIcon: const Icon(Icons.lock_outline),
+              border: const OutlineInputBorder(),
+              suffixIcon: IconButton(
+                icon: Icon(
+                  _obscureLoginPassword
+                      ? Icons.visibility_off
+                      : Icons.visibility,
+                ),
+                onPressed: () {
+                  setState(() {
+                    _obscureLoginPassword = !_obscureLoginPassword;
+                  });
+                },
+              ),
+            ),
+          ),
           const SizedBox(height: AppTheme.space24),
           SizedBox(
             width: double.infinity,
@@ -321,12 +354,32 @@ class _LoginPageState extends State<LoginPage>
           // Google Login Button
           SizedBox(
             width: double.infinity,
-            child: OutlinedButton.icon(
+            child: OutlinedButton(
               onPressed: _busy ? null : _doGoogle,
-              icon: const Icon(Icons.login),
-              label: const Text('Masuk dengan Google'),
               style: OutlinedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: AppTheme.space16),
+                side: const BorderSide(
+                  color: AppTheme.primaryColor,
+                  width: 1.5,
+                ),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.network(
+                    'https://www.google.com/favicon.ico',
+                    width: 20,
+                    height: 20,
+                  ),
+                  const SizedBox(width: 12),
+                  const Text(
+                    'Masuk dengan Google',
+                    style: TextStyle(
+                      color: AppTheme.primaryColor,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -342,27 +395,47 @@ class _LoginPageState extends State<LoginPage>
         children: [
           TextField(
             controller: _regName,
-            decoration: const InputDecoration(
+            style: const TextStyle(color: AppTheme.textPrimary),
+            decoration: InputDecoration(
               hintText: 'Nama Lengkap',
-              prefixIcon: Icon(Icons.person_outline),
-              border: OutlineInputBorder(),
+              hintStyle: TextStyle(color: Colors.grey.shade500),
+              prefixIcon: const Icon(Icons.badge_outlined),
+              border: const OutlineInputBorder(),
             ),
           ),
           const SizedBox(height: AppTheme.space16),
           TextField(
             controller: _regEmail,
-            keyboardType: TextInputType.emailAddress,
-            decoration: const InputDecoration(
-              hintText: 'Email',
-              prefixIcon: Icon(Icons.email_outlined),
-              border: OutlineInputBorder(),
+            keyboardType: TextInputType.text,
+            style: const TextStyle(color: AppTheme.textPrimary),
+            decoration: InputDecoration(
+              hintText: 'Username',
+              hintStyle: TextStyle(color: Colors.grey.shade500),
+              prefixIcon: const Icon(Icons.person_outline),
+              border: const OutlineInputBorder(),
             ),
           ),
           const SizedBox(height: AppTheme.space16),
-          PasswordFormField(
+          TextField(
             controller: _regPassword,
-            label: 'Password',
-            showStrengthIndicator: true,
+            obscureText: _obscureRegPassword,
+            style: const TextStyle(color: AppTheme.textPrimary),
+            decoration: InputDecoration(
+              hintText: 'Password',
+              hintStyle: TextStyle(color: Colors.grey.shade500),
+              prefixIcon: const Icon(Icons.lock_outline),
+              border: const OutlineInputBorder(),
+              suffixIcon: IconButton(
+                icon: Icon(
+                  _obscureRegPassword ? Icons.visibility_off : Icons.visibility,
+                ),
+                onPressed: () {
+                  setState(() {
+                    _obscureRegPassword = !_obscureRegPassword;
+                  });
+                },
+              ),
+            ),
           ),
           const SizedBox(height: AppTheme.space24),
           SizedBox(

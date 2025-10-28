@@ -481,7 +481,7 @@ class _ProfilePageState extends State<ProfilePage> {
               child: Column(
                 children: [
                   Text(
-                    'Temanku',
+                    'Temanku by TemanLabs',
                     style: TextStyle(
                       color: AppTheme.textSecondary,
                       fontSize: 12,
@@ -490,7 +490,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Versi 1.5.0',
+                    'Versi 1.5.1',
                     style: TextStyle(
                       color: AppTheme.textSecondary,
                       fontSize: 11,

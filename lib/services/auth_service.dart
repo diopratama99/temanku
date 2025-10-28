@@ -5,6 +5,7 @@ import 'package:crypto/crypto.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import '../data/app_database.dart';
 
@@ -109,7 +110,15 @@ class AuthService {
   Future<String?> loginWithGoogle() async {
     try {
       await _db.init();
-      final googleSignIn = GoogleSignIn(scopes: ['email', 'profile']);
+
+      // Initialize Google Sign-In with server client ID for ID token
+      // This requires both Android OAuth Client ID and Web OAuth Client ID in Google Cloud Console
+      final googleSignIn = GoogleSignIn(
+        scopes: ['email', 'profile'],
+        // Web Client ID - required to get ID token even with Android OAuth Client ID
+        serverClientId: dotenv.env['GOOGLE_WEB_CLIENT_ID'] ?? '',
+      );
+
       final account = await googleSignIn.signIn();
       if (account == null) return 'Login Google dibatalkan';
 
