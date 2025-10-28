@@ -16,6 +16,11 @@ class AppBottomNavigation extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final primaryColor = theme.colorScheme.primary;
+    // Respect device bottom insets (e.g., 3-button navigation bar)
+    final bottomInset = MediaQuery.of(context).padding.bottom;
+    const navBarHeight = 70.0;
+    const fabSize = 64.0;
+    const fabLift = 12.0; // angkat sedikit agar lebih "floating"
 
     return Semantics(
       label: 'Navigasi utama aplikasi',
@@ -42,7 +47,7 @@ class AppBottomNavigation extends StatelessWidget {
             ),
             child: SafeArea(
               child: SizedBox(
-                height: 70,
+                height: navBarHeight,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
@@ -79,7 +84,11 @@ class AppBottomNavigation extends StatelessWidget {
           ),
           // Floating center button
           Positioned(
-            bottom: 35,
+            // Center FAB vertically with other icons inside the nav bar
+            // and adapt to any system bottom inset.
+            // Formula: center target (bottomInset + navBarHeight/2)
+            // minus half of the FAB size to get the distance to the FAB bottom.
+            bottom: bottomInset + (navBarHeight / 2) - (fabSize / 2) + fabLift,
             child: Container(
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
@@ -100,8 +109,8 @@ class AppBottomNavigation extends StatelessWidget {
                     onTap: () => onDestinationSelected(2),
                     customBorder: const CircleBorder(),
                     child: Container(
-                      width: 64,
-                      height: 64,
+                      width: fabSize,
+                      height: fabSize,
                       alignment: Alignment.center,
                       child: const Icon(
                         Icons.add_rounded,
